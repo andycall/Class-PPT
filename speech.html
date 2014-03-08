@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Speech</title>
+	<link rel="stylesheet" href="speech.css">
+    <link rel="stylesheet" href="styles/xcode.css">
+</head>
+<body>
+	 <div id="impress">
+        <div id="bored" class="step slide" data-x="-2000" data-y="-1500">
+            <q>课前话题：</q>
+            <q>这个寒假总结</q>
+        </div>
+        <div class="step slide" data-x="-1000" data-y="-1500">
+            <q>话题1：</q>
+            <q>闭包</q>
+        </div>
+        <div class="step slide" data-x="0" data-y="-1500">
+            <q>什么是闭包</q>
+            <pre><code>
+function closure(){
+    return function(value){
+        if(value > 10){
+            return value * 10;
+        }
+        else if(value < 10){
+            return value / 10;
+        }
+    }
+}  
+            </code></pre>
+        </div>
+<div class="step slide" data-x="1000" data-y="-1500">
+            <q>闭包的内存问题</q>
+        <pre><code>
+function closure(){
+    return function(value){
+        if(value > 10){
+            return value * 10;
+        }
+        else if(value < 10){
+            return value / 10;
+        }
+    }
+}           
+
+var closure = closure();
+var result = closure(12);
+
+closure = null; //释放对匿名函数的引用以释放内存
+        </code></pre>
+</div>
+        <div class="step slide" data-x="2000" data-y="-1500">
+        <q>闭包的变量问题</q>
+        <pre><code>
+function NumberArray(){
+    var result = [];
+    for(var i = 0; i < 10; i++){
+        result[i] = function(){
+            return i;
+        }
+    }
+    return result;
+}
+
+NumberArray().forEach(function(value){
+    console.log(value())
+});
+        </code></pre>
+<p>返回的函数数组里的函数的返回值是什么？</p>
+        </div>
+        <div class="step slide" data-x="3000" data-y="-1500">
+        <q>this 对象</q>
+<pre><code>
+var name = "new Window";
+var object = {
+    name : "my Object",
+    getNameFunc : function(){
+        return function(){
+            return this.name;
+        }
+    },
+    getThis : function(){
+        return this;
+    },
+    getOuterThis : function(){
+        return function(){ //这个函数已经是在外部作用域里了
+            return this;
+        }
+    }
+}
+   
+</code></pre>
+        </div>
+          <div class="step slide" data-x="4000" data-y="-1500">
+        <q>块级作用域</q>
+<pre><code>
+(function(){
+    
+})();
+
+function outputNumber(){
+    (function(){
+        for(var i = 0 ; i < 1; i ++){
+                alert(i);
+            }
+    })();
+
+    alert(i);
+    
+}
+</code></pre>
+        </div>
+        <div class="step slide" data-x="5000" data-y="-1500">
+    <q>模块模式</q>
+            <pre><code>
+function public(){
+    var privateRandomValue = Math.random();
+    var privateFunction = function(){
+        alert('This is a Private Function');
+    };
+
+    return {
+        publicRandomValue : function(){
+            return Math.random();
+        },
+        publicFunction : function(){
+            alert('This is a Public Function');
+        },
+        getPrivateRandomValue : function(){
+            return privateRandomValue;
+        }
+    }
+}
+            </code></pre>
+        </div>
+         <div class="step slide" data-x="5000" data-y="-500" data-rotate-z="90">
+            <q>话题二：</q>
+            <q>对象与原型</q>
+
+        </div> 
+        <div class="step slide" data-x="5000" data-y="500" data-rotate-z="90">
+            <q>什么是对象</q>
+            <p>
+                ECMA-262 把对象定义为 ： “无序属性的集合，其属性可以包含基本值，对象或函数。”
+            </p>
+            <pre><code>
+var Me = {
+    type : "屌丝",
+    HaveGirlFriend : false,
+    Job : "程序猿",
+    bark : function(){
+        console.log('Andycall is barking :  Wo! wo! wo!');
+    }
+}                
+
+
+            </code></pre>
+        </div>
+        <div class="step slide" data-x="5000" data-y="1500" data-rotate-z="90">
+            <q>对象工厂</q>
+            <pre><code>
+function createAndycall(type,HaveGirlFriend,Job,bark){
+    var person = new Object();
+    person.type = type;
+    person.HaveGirlFriend = HaveGirlFriend;
+    person.Job = Job;
+    person.bark = bark;
+
+    return person;
+}     
+
+
+var AndycallCloner = createAndycall('屌丝',false,'程序猿',function(){
+    console.log('Andycall is barking :  Wo! wo! wo!');
+})           
+            </code></pre>
+
+        </div> 
+
+        <div class="step slide" data-x="5000" data-y="2500" data-rotate-z="90">
+            <q>构造对象</q>
+            <pre><code>
+function PersonCreator(type,HaveGirlFriend,Job,bark){
+    this.type = type;
+    this.HaveGirlFriend = HaveGirlFriend;
+    this.Job = Job;
+    this.bark = bark;
+}    
+
+
+var andycall = new PersonCreator('屌丝',false,'程序猿',function(){
+    console.log('Andycall is barking :  Wo! wo! wo!');
+});
+
+var Tuhao = new PersonCreator('土豪',true,'绝对不是程序猿',function(){
+    console.log('Laughing at Andycall'); 
+});
+
+
+            </code></pre>
+
+        </div>
+         <div class="step slide" data-x="5000" data-y="3500" data-rotate-z="90">
+        <q>原型模式</q>
+        <p>创建的每一个函数都有一个prototype（原型）属性,这个属性是个指针。指向一个对象。而这个对象的属性可以为所有实例所共享</p>
+        <pre><code>
+function animal(){
+    this.genera = "humal";   
+}
+
+animal.prototype.type = '屌丝';
+animal.prototype.HaveGirlFriend = false;
+animal.prototype.Job = '程序猿';
+animal.prototype.bark = function(){
+    console.log('Andycall is barking :  Wo! wo! wo!');
+}
+
+var Andycall = new animal();
+        </code></pre>
+        </div>
+
+         <div class="step slide" data-x="5000" data-y="4500" data-rotate-z="90">
+        <q>理解原型</q>
+        <p>只要创建一个函数，就会根据一组特定的规则为该函数创建一个prototype属性，这个属性指向函数的原型对象，同时也会有一个constructor指针，指向那个函数的prototype属性所在的函数</p>
+        <pre><code>
+console.log(animal.prototype);
+console.log(animal.prototype.constructor);
+        </code></pre>
+        </div>
+  
+        <div class="step slide" data-x="5000" data-y="5500" data-rotate-z="90">
+        <q>实例，构造函数，构造函数的原型之间的关系</q>
+        <p>实例继承构造函数和构造函数的原型的属性。</p>
+        <p>构造函数的原型有一个constructor指针指向构造函数</p>
+        <p>在FireFox, Safari, Chrome里每一个对象上有一个__proto__属性指向其构造函数的原型。</p>
+        <p>同样，也可以通过isPrototype方法来验证对象与原型的关系</p>
+        <pre><code>
+console.log(animal.prototype.isPrototype(Andycall));            
+        </code></pre>
+        </div> 
+        
+
+         <div class="step slide" data-x="5000" data-y="6500" data-rotate-z="90">
+        <q>实例的属性与原型的属性</q>
+        <pre><code>
+Andycall.genera = "Monkey";
+var another = new animal();
+console.log(Andycall);
+console.log(another);
+        </code></pre>
+
+<p>使用delete删除属性可以开通通向原型的大门</p>
+<p>HasOwnProperty()可以检测属性是否为本身的，还是继承于原型的</p>
+<p>in 操作符能够访问到所有属性，无论是在实例中还是在原型中</p>
+        </div> 
+
+        <div class="step slide" data-x="5000" data-y="7500" data-rotate-z="90">
+        <q>一些实际应用</q>
+        <p>检测一个对象的属性是否为原型的</p>
+<pre><code>
+function hasPrototypeProperty(object,name){
+    return !object.hasOwnProperty(name) && (name in object);
+}
+</code></pre>
+        </div>
+            <!-- <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10"> -->
+        <div class="step slide" data-x="5000" data-y="8500" data-rotate-z="90">
+        <q>结束语</q>
+        <q>有关原型进阶的知识，我们下期再会！</q>
+        </div>
+
+        <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+        <q>HomeWork：</q>
+        <q>1. 写一个4 X 4 的表格。要求点击任何一个单元格，当前单元格的背景颜色要改变</q>
+        <q>2.构造出你想要的任何对象出来</q>
+        </div>
+       
+    </div>
+</body>
+<script type="text/javascript" src="impress.js"></script>
+<script type="text/javascript">
+impress().init();
+</script>
+<script src="highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+function public(){
+    var privateRandomValue = Math.random();
+    var privateFunction = function(){
+        alert('This is a Private Function');
+    };
+
+    return {
+        publicRandomValue : function(){
+            return Math.random();
+        },
+        publicFunction : function(){
+            alert('This is a Public Function');
+        },
+        getPrivateRandomValue : function(){
+            return privateRandomValue;
+        }
+    }
+}
+
+function NumberArray(){
+    var result = [];
+    for(var i = 0; i < 10; i++){
+        result[i] = function(){
+            return i;
+        }
+    }
+    return result;
+}
+
+
+var name = "new Window";
+var object = {
+    name : "my Object",
+    getNameFunc : function(){
+        return function(){
+            return this.name;
+        }
+    }
+}
+
+
+function outputNumber(count){
+    for(var i = 0; i < count; i ++){
+        alert(i);
+    }
+    var i;
+    alert(i);
+}
+
+(function(){
+
+})();
+
+function animal(){
+    this.genera = "humal";   
+}
+
+animal.prototype.type = '屌丝';
+animal.prototype.HaveGirlFriend = false;
+animal.prototype.Job = '程序猿';
+animal.prototype.bark = function(){
+    console.log('Andycall is barking :  Wo! wo! wo!');
+}
+
+var Andycall = new animal();
+</script>
+</html>
