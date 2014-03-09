@@ -265,18 +265,349 @@ function hasPrototypeProperty(object,name){
 }
 </code></pre>
         </div>
+
+
+        <!-- 第二次上课。。。 -->
+
+
+         <div class="step slide" data-x="5000" data-y="8500" data-rotate-z="90">
+        <q>更简单的原型语法（一）</q>
+<pre><code>
+animal.prototype = {
+    type: "屌丝",
+    Job : "程序猿",
+    bark: function(){
+        console.log("wowowow!");
+    }   
+}
+</code></pre>
+<p>但是这带来问题</p>
+        </div>
+
+           <div class="step slide" data-x="5000" data-y="9500" data-rotate-z="90">
+        <q>更简单的原型语法（二）</q>
+<pre><code>
+var another = new animal();
+console.log(another instanceof Object);
+console.log(another instanceof animal);
+console.log(another.constructor == animal);
+console.log(another.constructor == Object);
+</code></pre>
+<p>因为赋值的为一个对象，其构造函数为Object。 所以another的constructor 会指向Object而不是animal</p>
+<p>于是：</p>
+<pre><code>
+animal.prototype = {
+    constructor : animal,  
+    type: "屌丝",
+    Job : "程序猿",
+    bark: function(){
+        console.log("wowowow!");
+    }   
+}
+</code></pre>
+
+        </div>
+         <div class="step slide" data-x="5000" data-y="10500" data-rotate-z="90">
+        <q>原型的动态性</q>
+<pre><code>
+function animal(){}
+
+var Monkey = new animal();
+
+Monkey.prototype = { //这里把对象的prototype指向给换掉了。
+    constructor : animal,
+    name : "andycall",
+    age : 18,
+    job : "程序猿"，
+    sayName : function(){
+        alert('213');
+    }
+};
+
+Monkey.sayName();
+</code></pre>
+<p>在对象的原型上添加方法可以为以前所实例化的对象所获取，但是如果改变了对象的prototype指向。这一切都变了。以前创建的对象还依然指向最初时的原型。</p>
+
+        </div>
+         <div class="step slide" data-x="5000" data-y="11500" data-rotate-z="90">
+        <q>原生对象的原型</q>
+        <p>一些Javascript原生的对象也有自己的原型（Array、Object、String），同时在其原型上也有一些方法。</p>
+<pre><code>
+console.log(typeof Array.prototype.sort);
+console.log(typeof String.prototype.toString);
+</code></pre>
+        <p>通过原生对象的原型，就可以为其定义一些方法。</p>
+<pre><code>
+Object.prototype.extend = function(extension){
+    for(var key in this){
+        extension[key] = this[key]
+    }
+    return extension;
+}
+var obj1 = {};
+var obj2 = {name : "hello"};
+obj1.extend(obj2);
+console.log(obj2);
+</code></pre>
+
+        </div>
+           <div class="step slide" data-x="5000" data-y="12500" data-rotate-z="90">
+            <q>原型对象的问题</q>
+<pre><code>
+function Monkey(){}
+Monkey.prototype = {
+    constructor : Monkey,
+    type : "human",
+    computers : ["Thinkpad T430","Thinkpad T61"]
+}
+var andycall = new Monkey();
+var another = new Monkey();
+andycall.computers.push("Macbook Pro");
+console.log(andycall.computers);
+console.log(another.computers);
+</code></pre>
+<p>由于在Javascript里数组一般都是引用，从而导致创建的2个对象中的computers方法其实是2个指向同一个数组的引用。所以在当一个对象对数组进行改变时，会导致该构造函数所实例化的所有对象中的computers数组都发生了改变</p>
+        </div>
+         <div class="step slide" data-x="5000" data-y="13500" data-rotate-z="90">
+            <q>动态原型模式</q>
+<pre><code>
+function Monkey(name,age,job){
+    this.name = name;
+    this.age = age;
+    this.job = job;
+
+
+    if(typeof this.sayHi != 'function'){
+        Monkey.prototype.sayHi = function(){
+            console.log(this.name);
+        }
+    }
+}
+
+var andycall = new Monkey('andycall',18,"程序猿");
+andycall.sayHi();
+
+</code></pre>
+        </div>
+        <div class="step slide" data-x="5000" data-y="14500" data-rotate-z="90">
+            <q>寄生构造函数</q>
+            <pre><code>
+function SpecialArr(){
+    var values = new Array();
+
+
+    values.push.apply(values,arguments);
+
+    values.sayHello = function(){
+        console.log('hello');
+    };
+
+    return values;
+}
+
+var arr = new SpecialArr('123','456','789');
+arr.sayHello();
+            </code></pre>    
+        </div>
+
+
+        <div class="step slide" data-x="5000" data-y="15500" data-rotate-z="180">
+        <q>话题二：</q>
+        <p>原型的继承</p>
+        </div>
+        <div class="step slide" data-x="4000" data-y="15500" data-rotate-z="180">
+        <q>原型链</q>
+<pre><code>
+function Animal(){
+    this.type = "animal";
+}
+Animal.prototype.getType = function(){
+    console.log(this.type);
+}
+function Human(){
+    this.job = "程序猿";
+}
+Human.prototype = new Animal();
+Human.prototype.getJob = function(){
+    console.log(this.job);
+}
+var andycall = new Human();
+andycall.getType();
+</code></pre>
+        </div>
+        <div class="step slide" data-x="3000" data-y="15500" data-rotate-z="180">
+        <q>默认的原型</q>
+        <pre><code>
+console.log(andycall instanceof Object);
+console.log(andycall instanceof Human);
+console.log(andycall instanceof Animal);
+        </code></pre>
+        <p>所有的引用类型（如对象，数组）都继承于Object，也就是所有引用类型都可以访问到Object.prototype里的方法</p>
+        </div>
+
+        <div class="step slide" data-x="2000" data-y="15500" data-rotate-z="180">
+        <q>一些注意事项（一）</q>
+        <p>为原型添加或替换方法一定要放在替换原型的语句之后</p>
+<pre><code>
+function Animal(){ this.type = "animal";}
+Animal.prototype.getType = function(){ console.log(this.type);}
+function Human(){ this.job = "程序猿" }
+Human.prototype = new Animal(); // 这句一定要在前
+Human.prototype.getJob = function(){  // 这句一定要在后面
+    console.log(this.job);
+}
+Human.prototype.getType = function(){ //这里重写了getType方法
+    console.log("想找Type？ 没有啦！");
+}
+var andycall = new Human();
+andycall.getType();
+</code></pre>
+        </div>
+        <div class="step slide" data-x="1000" data-y="15500" data-rotate-z="180">
+        <q>一些注意事项（二）</q>
+        <p>使用原型链进行继承的时候，不能用对象字面量创建原型方法。这样会重写其对象的原型。</p>
+<pre><code>
+function Animal(){
+    this.type = "animal";
+}
+Animal.prototype.getType = function(){
+    console.log(this.type);
+}
+function Human(){
+    this.job = "程序猿";
+}
+Human.prototype = new Animal();
+Human.prototype = {
+    result : "你早晚会后悔的。。。"
+}
+var andycall = new Human();
+andycall.getType();
+</code></pre>
+        </div>
+         <div class="step slide" data-x="0" data-y="15500" data-rotate-z="180">
+        <q>原型链的一些问题</q>
+<pre><code>
+function Animal(){
+    this.species = ["monkey","bird","dog"];
+}
+function Human(){}
+Human.prototype = new Animal();
+
+var andycall = new Human();
+andycall.species.push('human');
+console.log(andycall.species);
+
+var Monkey = new Human();
+console.log(Monkey.species);
+</code></pre>
+        </div>
+         <div class="step slide" data-x="-1000" data-y="15500" data-rotate-z="180">
+        <q>Call函数与Apply函数</q>
+<pre><code>
+window.color = "red";
+var obj = {color : "blue"};
+
+function callColor(){
+    console.log(this.color);
+}
+callColor();
+callColor.call(this);
+callColor.call(window);
+callColor.call(obj);
+</code></pre>
+        </div>
+        <div class="step slide" data-x="-2000" data-y="15500" data-rotate-z="180">
+        <q>借用构造函数</q>
+<pre><code>
+function Animal(kind){
+    this.species = [];
+    if(kind){
+        this.species.push(kind);
+    }
+
+}
+function Human(){
+    Animal.call(this,"human");
+
+    this.age = 18;
+}
+var andycall = new Human();
+andycall.species.push('hello');
+console.log(andycall.species);
+
+var another = new Human();
+console.log(another.species);
+</code></pre>
+        </div>
+        <div class="step slide" data-x="-3000" data-y="15500" data-rotate-z="180">
+        <q>组合继承模式</q>
+<pre><code>
+function Animal(kind){
+    this.species = [];
+    if(kind){
+        this.species.push(kind);
+    }
+}
+Animal.prototype.getSpecies = function(){
+    console.log(this.species);
+}
+function Human(){
+    Animal.call(this,"human");
+    this.age = 18;
+}
+Human.prototype = new Animal();
+Human.prototype.constructor = Human;
+Human.prototype.sayAge = function(){
+    console.log(this.age);
+}
+var andycall = new Human();
+andycall.species.push('Hello');
+andycall.age = 88;
+console.log(andycall.species);
+console.log(andycall.getSpecies());
+console.log(andycall.sayAge());
+
+var monkey = new Human();
+console.log(monkey.species);
+console.log(monkey.getSpecies());
+console.log(monkey.sayAge());
+</code></pre>
+        </div>
+     <div class="step slide" data-x="-4000" data-y="15500" data-rotate-z="270">
+        <q>话题三：DOM</q>
+        <p>什么是DOM</p>
+        <p></p>
+        </div>
+    <div class="step slide" data-x="-4000" data-y="14500" data-rotate-z="270">
+        <q>Node类型</q>
+        <p>Javascript中每一个节点都继承与NodeType属性，所有的节点类型都有相同的基本属性与方法</p>
+<pre><code>
+var p = document.createElement('p');
+console.log(p.nodeType);
+console.log(p.nodeName);
+</code></pre>
+    </div>
+     <div class="step slide" data-x="-4000" data-y="13500" data-rotate-z="270">
+        
+    </div>
+     <div class="step slide" data-x="-4000" data-y="12500" data-rotate-z="270">
+        
+    </div>
+
+
             <!-- <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10"> -->
-        <div class="step slide" data-x="5000" data-y="8500" data-rotate-z="90">
+        <!-- <div class="step slide" data-x="5000" data-y="8500" data-rotate-z="90">
         <q>结束语</q>
         <q>有关原型进阶的知识，我们下期再会！</q>
         </div>
+ -->
 
-        <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+       <!--  <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
         <q>HomeWork：</q>
         <q>1. 写一个4 X 4 的表格。要求点击任何一个单元格，当前单元格的背景颜色要改变</q>
         <q>2.构造出你想要的任何对象出来</q>
         </div>
-       
+        -->
     </div>
 </body>
 <script type="text/javascript" src="impress.js"></script>
