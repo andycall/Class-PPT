@@ -574,13 +574,13 @@ console.log(monkey.sayAge());
 </code></pre>
         </div>
      <div class="step slide" data-x="-4000" data-y="15500" data-rotate-z="270">
-        <q>话题三：DOM</q>
+        <q>话题三：DOM 简介</q>
         <p>什么是DOM</p>
         <p></p>
         </div>
     <div class="step slide" data-x="-4000" data-y="14500" data-rotate-z="270">
         <q>Node类型</q>
-        <p>Javascript中每一个节点都继承与NodeType属性，所有的节点类型都有相同的基本属性与方法</p>
+        <p>Javascript中每一个节点都继承与NodeType属性，所有的节点类型都有相同的基本属性与方法,同时Node节点也有一个NodeName属性</p>
 <pre><code>
 var p = document.createElement('p');
 console.log(p.nodeType);
@@ -588,26 +588,329 @@ console.log(p.nodeName);
 </code></pre>
     </div>
      <div class="step slide" data-x="-4000" data-y="13500" data-rotate-z="270">
-        
+        <q>Document类型</q>
+        <p>Javascript通过Document表示文档，document对象是HTMLDocument(继承自Document类型)的一个实例。用来表示整个页面。document对象也是window对象的一个属性。因此可以用全局对象来访问。</p>
     </div>
-     <div class="step slide" data-x="-4000" data-y="12500" data-rotate-z="270">
-        
+    <div class="step slide" data-x="-4000" data-y="12500" data-rotate-z="270">
+        <q>DOM方法</q>
+        <p>文档中每一个节点都有一个childNode属性。其中保存着一个Nodelist对象。</p>
+        <p>Nodelist是一个类数组对象。用于保存一组有序的节点。Nodelist对象是基于DOM动态结构执行查询的结果。DOM结构的变化会自动反应在NodeList对象中。</p>
+<pre><code>
+var body = document.body;
+var firstChild = body.childNodes[0];
+var count = body.childNodes.length;
+</code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="11500" data-rotate-z="270">
+        <q>如何将类数组转化为数组</q>
+    <p>Array对象里有一个slice将类数组转化为数组</p>
+<pre><code>
+var ObjectArr = document.body.childNodes;
+console.log(Object.prototype.toString.call(ObjectArr));
+var RealArr = Array.prototype.slice.call(ObjectArr);
+console.log(Object.prototype.toString.call(RealArr));
+</code></pre>
+
+
+<p>注意：这种方法只适用于IE9+的浏览器。IE8及以前浏览器的类数组转数组方法下节课继续讨论</p>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="10500" data-rotate-z="270">
+        <q>ParentNode,nextSibling,previousSibling</q>
+        <p>每一个节点都有一个parentNode属性。该属性指向文档树的父节点。包含在childNodes列表中的所有节点都具有相同的父节点。</p>
+        <p>同时节点也有nextSibling和previousSibling属性。用于访问同一列表中的其他节点。</p>
+<pre><code>
+var body = document.body;
+var firstChild = body.firstChild;
+var secondChild = firstChild.nextSibling;
+console.log(secondChild.previousSibling === firstChild);
+</code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="9500" data-rotate-z="270">
+        <q>操作节点</q>
+        <p>DOM还提供了一些操作节点的方法。最常用的为appendChild,removeChild,insertBefore</p>
+<pre><code>
+var body = document.body;
+var someNode = document.createElement('p');
+var anotherNode = document.createElement('div');
+someNode.innerHTML = "Helloworld";
+anotherNode.innerHTML = "Mac OS X";
+
+someNode.setAttribute('id','abc');
+body.appendChild(someNode);
+body.appendChild(anotherNode);
+
+body.removeChild(document.getElementById('abc'));
+</code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="8500" data-rotate-z="270">
+        <q>节点复制</q>
+        <p>DOM还提供了一个方法cloneNode用于节点的复制。同时它还提供了一个布尔值参数。用户判断深复制还是浅复制.默认为浅复制</p>
+<pre><code>
+var body = document.body;
+var shallow_clone = body.cloneNode();
+var deep_clone = body.cloneNode(true);
+</code></pre>
+    </div>
+    <!-- 第三次上课 -->
+    <div class="step slide" data-x="-4000" data-y="7500" data-rotate-z="270">
+    <q>DOM节点层次</q>
+    <p>|</p>
+    <p>|</p>
+    <p>| --> Node类型</p>
+    <p>| --> Document类型</p>
+    <p>| --> Element类型</p>
+    <p>| --> Text类型</p>
+    <p>注释：以下IE7+指代IE7及比IE7更牛逼的浏览器</p>
+    <p>IE7-指代IE7以及比IE7还坑爹的浏览器</p>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="6500" data-rotate-z="270">
+    <q>Document类型</q>
+    <p>Document类型表示整个文档, document对象是window对象的一个属性</p>
+    <p>document.body可以获取对&lt;body&gt;的引用. 兼容IE7+及其他所有浏览器</p>
+    <p>docment.title 可以获取文档的title属性.在IE8+及Chromeh和firefox都可以用
+        <pre><code>document.title="name"</code></pre>
+        来改变文档中的title属性。</p>
+    <p>document.URL可以获取页面完整的URL地址,兼容IE7+及其他所有浏览器</p>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="5500" data-rotate-z="270">
+        <q>Element类型</q>
+        <p>查找元素</p>
+        <p>document.getElementById()注意要区分大小写。。虽然IE7- 浏览器不在意这些细节</p>
+        <p>如果页面有多个相同的ID值，getElementById()只会返回第一次出现的元素</p>
+        <p>IE7-这些奇葩们甚至会把name和id值相同的表单元素也返回了。</p>
+        <p>document.getElementsByTagName()会返回一个nodelist对象。作为一个动态的集合，会在节点改变时动态更新集合内的元素</p>
+        <p>返回的nodeList对象可以用item方法或者方括号来访问</p>
+         &lt;form action=&quot;&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;hello&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;hello&quot;&gt;
+        &lt;/form&gt;
+         &lt;div andycall=&quot;12321andyucall3&quot; id=&quot;abc&quot; style=&quot;height:100px; width:200px;&quot; onclick=&quot;hello();&quot;&gt;abc&lt;/div&gt;
+        <pre><code> 
+         alert(document.getElementById('ABC'))
+         alert(document.getElementById('abc'));
+        </code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="4500" data-rotate-z="270">
+        <q>取得特性</q>
+        <p>使用getAttribute可以取得该元素的特性.不过IE7-之类通过getAttribute()访问style或onclick这样的事件处理特性时</p>
+        <p>在访问style时,IE7会返回一个对象，IE8会返回大写的属性.访问onclick时IE7会返回一个函数</p>
+        <p>直接用点运算符访问自定义属性将会访问undefined,不过IE8-可以</p>
+        <p>由于IE这个坑在捣乱，所以只有在访问自定义属性时才会用getAttribute方法</p>
+         &lt;div andycall=&quot;12321andyucall3&quot; id=&quot;abc&quot; style=&quot;height:100px; width:200px;&quot; onclick=&quot;hello();&quot;&gt;abc&lt;/div&gt;
+        <pre><code>
+        alert(document.getElementById('abc').andycall);
+        alert(document.getElementById('abc').style);
+        alert(document.getElementById('abc').onclick);
+        </code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="3500" data-rotate-z="270">
+        <q>设置特性</q>
+        <p>使用setAttribute来设置属性,同样也可以使用点运算符来设置属性。</p>
+        <pre><code>
+document.getElementById('abc').setAttribute('andy',"hello");
+document.getElementById('abc').andy ="hello";
+        </code></pre>
+        <p>在IE8+以及其他浏览器里为DOM元素添加自定义属性不会自动成为元素的特性,IE8-除外</p>
+        <pre><code>
+document.getElementById('abc').callAndycall = "hello";
+alert(document.getElementById('abc').getAttribute('callAndycall'));  // IE8- 会有值
+        </code></pre>
+        <p>注意：在IE7-等渣渣中，用setAttribute来设置style或者class存在一些异常行为，也就是没有效果。所以推荐使用属性来设置特性</p>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="2500" data-rotate-z="270">
+        <q>删除特性</q>
+        <p>removeAttribute()方法可以从元素中彻底删除属性</p>
+        <pre><code>
+document.getElementById('abc').removeAttribute('andycall');
+        </code></pre>
+        <p>注意：IE6-这些玩意儿永远都无法理解removeAttribute的心</p>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="1500" data-rotate-z="270">
+        <q>Attributes属性</q>
+        Attribute属性包含一个NamedNodeMap,与nodelist类似，也是一个动态的集合。元素的每一个特性都有一个Attr节点表示，每个节点都保存在NamedNodeMap对象中。NamedNodeMap对象有下列方法
+        <ul>
+            <li>getNamedItem(name)：返回nodeName属性等于name 节点</li>
+            <li>removeNameItem(name): 从列表中移除nodenane属性为索引</li>
+            <li>setNamedItem(node): 向列表中添加节点，以节点的nodeName属性为索引</li>
+            <li>items(post): 返回位于数字pos位置处的节点</li>
+        </ul>
+        <pre><code>
+var id =  document.getElementById('abc').attributes.getNamedItem('id').nodeValue;
+var another_id = document.getElementById('abc').attributes['id'].nodeValue;
+        </code></pre>
+        <p>可以通过这种方式来设置特性的值</p>
+        <pre><code>
+document.getElementById('abc').attributes['id'].nodeValue = 'FackAbc';
+        </code></pre>
+        调用removeNamedItem()方法与在元素上调用removeAttribute相同
+    </div>
+    <div class="step slide" data-x="-4000" data-y="500" data-rotate-z="270">
+        <q>如何调教IE7-中Attributes的问题</q>
+         <p>注意：IE7-这些DB们会返回HTML元素所有可能的特性。所以返回100多个很常见</p>
+        <pre><code>
+document.getElementById('abc').attributes.length // IE7- > 100
+        </code></pre>
+        <pre><code>
+function outputAttributes(element){
+    var attrs = [];
+    var attrName,attrValue,i,len;
+    for(var i = 0, len = element.attributes.length;  i < len ; i ++){
+        attrName = element.attributes[i].nodeName;
+        attrvalue = element.attributes[i].nodeValue;
+        if(element.attributes[i].specified){
+            attrs.push(attrName + "=\"" + attrvalue + "\"" );
+        }
+    }
+    return attrs.join(" ");
+}
+        </code></pre>
+    </div>
+     <div class="step slide" data-x="-4000" data-y="-500" data-rotate-z="270">
+        <q>创建元素</q>
+        <p>document.createElement可以用来创建节点</p>
+        <p>IE中有一种特有的方法. document.createElement("&lt;div  id=\"helloworld\"&gt;&lt;/div&gt;")</p>
+        <p>这种方法有助于避开IE7-及更早版本动态创建元素的某些问题</p>
+        <ul>
+            <li>不能设置动态创建的&lt;iframe&gt;元素的name特性</li>
+            <li>不能通过表单的reset()方法重设动态创建的&lt;input&gt;元素(reset方法以后再谈)</li>
+            <li>动态创建的type特性为“reset”的&lt;button&gt;元素重设不了表单</li>
+        </ul>
+    </div>
+
+    <div class="step slide" data-x="-4000" data-y="-1500" data-rotate-z="270">
+       <q>元素的子节点</q>
+       <p>不同浏览器看待子节点的方式也不同。首当其冲当然就是那些不听话的DB们。</p>
+&lt;ul&gt;<br>
+    &lt;li&gt;list1&lt;/li&gt;<br>
+    &lt;li&gt;list2&lt;/li&gt;<br>
+    &lt;li&gt;list3&lt;/li&gt;<br>
+&lt;/ul&gt;
+
+    <p>IE解析代码时，ul会有3个节点，然后其他浏览器如chrome会有7个几点。其中4个为文本节点</p>
+    <p>因此由于这个原因，在遍历childNodes时要记得检查一下nodeType属性</p>
+    <pre><code>
+for(var i = 0,len = document.getElementById('abc').childNodes.length; i  < len ; i ++){
+    if(document.getElementById('abc').childNodes[i].nodeType == 1){
+        //...
+    }
+}
+    </code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="-2500" data-rotate-z="270">
+    <q>Text类型</q>
+    <p>text为文本节点，包含的是按照字面解释的纯文本内容,没有子节点</p>
+    <p>可以使用下列方法操作节点中的文本</p>
+    <ul>
+        <li>appendData(text): 将text添加到节点的末尾</li>
+        <li>deleteData(offset,count): 在offset指定的位置开始删除count个字段</li>
+        <li>insertData(offset,text): 在offset指定的位置开始插入text</li>
+        <li>replaceData(offset,count,text): 用text替换从offset指定的位置开始到offset处的字符串</li>
+        <li>splitText(offset): 从offset指定的位置将当前文本节点分成2个文本节点</li>
+        <li>substringData(offset,count): 提取从offset指定的位置开始到offset+count位置处的字符串</li>
+    </ul>
+    <p>注意：修改文本节点时字符串会经过HTML编码</p>
+    <pre><code>
+document.getElementById('abc').firstChild.nodeValue = "hello <div>hellow!</div>";
+    </code></pre>
+
     </div>
 
 
-            <!-- <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10"> -->
+    <!-- <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10"> -->
         <!-- <div class="step slide" data-x="5000" data-y="8500" data-rotate-z="90">
         <q>结束语</q>
-        <q>有关原型进阶的知识，我们下期再会！</q>
-        </div>
- -->
+        <q>有关DOM进阶以及兼容性的知识，我们下期再会！</q>
+        </div> -->
 
-       <!--  <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+        <!-- 第一次作业 -->
+<!-- ========================================================================================== -->
+
+       <!--    <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
         <q>HomeWork：</q>
         <q>1. 写一个4 X 4 的表格。要求点击任何一个单元格，当前单元格的背景颜色要改变</q>
         <q>2.构造出你想要的任何对象出来</q>
         </div>
         -->
+
+<!-- ========================================================================================== -->
+        <!-- 第二次作业 -->
+        <!-- 其实想出这题的。。可惜太难。 = =。 如果你有能力的话，做好后发我邮箱(dongtiangche@gmail-->
+      <!--   <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+        <q>HomeWork：</q>
+        <p>写一个Div控制器的构造函数</p>
+        <p>要求：该构造函数所实例化的对象第一个参数为所控制的div。实例化出的控制器能够对div进行添加，删除等节点操作。控制器所依附的div要有扩展对象方法(extend)。</p>
+        <p>如:</p>
+        <pre><code>
+<div id="control"></div>
+function divHandle(){};
+
+var divControl = new divHandle('control'); //实例化一个控制器对象。
+divControl.append(document.createElement('div')); //向divControl中添加一个div框
+divControl.remove(document.getElementById('target'));//从divControl中移除一个节点
+        </code></pre>    
+        </div> -->
+
+      <!--   <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+            <q>HomeWork</q>
+            <p>构造一个矩形对象和一个正方形对象。正方体对象继承于矩形对象。每个对象上都有自己的方法用来获取这个正方体或矩形的面积。</p>
+        </div>  -->
+
+<!-- 链式调用源码 -->
+
+<!-- function _getId(name){
+    this.ele = typeof name == 'string' ? document.getElementById(name) : name;
+}
+
+function getId(name){
+    var abc = new _getId(name);
+    console.log(abc);
+    return abc;
+}
+getId.fn = _getId.prototype = {
+    constructor : _getId,
+    sayHi : function(){
+        alert('hi');
+        return this;
+    },
+    sayHello : function(){
+        alert("hell0");
+        return this;
+    },
+    Andycall : function(){
+        alert("i am andycall");
+        return this;
+    }
+}
+
+
+ -->
+<!-- ========================================================================================== -->
+
+<!-- ========================================================================================= -->
+<!-- 可选作业 -->
+<!-- <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+            <q>HomeWork</q>
+            <p>封装一个功能函数，时要求：</p>
+            <ul>
+                <li>使用链式调用的方式</li>
+                <li>第一个参数为属性值</li>
+                <li>第二个参数可选。如果有，则是为传进去的dom对象设置方法。如果没有，则获取该对象方法</li>
+            </ul>
+
+            Exam:
+            function css(obj,attr,value){}
+
+            $('#abc').css("width","100px"); // &lt;p id="abc" style="width:100px"&gt;&lt;/p&gt; 
+</div> 
+ -->
+ <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+            <q>HomeWork</q>
+            <p>封装二个功能函数，要求能够为一个为获取元素的属性值，另一个为设置元素的属性值.</p>
+            <q>要求：兼容IE7+浏览器</q>
+</div> 
+<!-- ========================================================================================== -->
+
+
     </div>
 </body>
 <script type="text/javascript" src="impress.js"></script>
