@@ -5,6 +5,7 @@
 	<title>Speech</title>
 	<link rel="stylesheet" href="speech.css">
     <link rel="stylesheet" href="styles/xcode.css">
+    <script type="text/javascript" src="jquery.js"></script>
 </head>
 <body>
 	 <div id="impress">
@@ -574,13 +575,13 @@ console.log(monkey.sayAge());
 </code></pre>
         </div>
      <div class="step slide" data-x="-4000" data-y="15500" data-rotate-z="270">
-        <q>话题三：DOM</q>
+        <q>话题三：DOM 简介</q>
         <p>什么是DOM</p>
         <p></p>
         </div>
     <div class="step slide" data-x="-4000" data-y="14500" data-rotate-z="270">
         <q>Node类型</q>
-        <p>Javascript中每一个节点都继承与NodeType属性，所有的节点类型都有相同的基本属性与方法</p>
+        <p>Javascript中每一个节点都继承与NodeType属性，所有的节点类型都有相同的基本属性与方法,同时Node节点也有一个NodeName属性</p>
 <pre><code>
 var p = document.createElement('p');
 console.log(p.nodeType);
@@ -588,26 +589,111 @@ console.log(p.nodeName);
 </code></pre>
     </div>
      <div class="step slide" data-x="-4000" data-y="13500" data-rotate-z="270">
-        
+        <q>Document类型</q>
+        <p>Javascript通过Document表示文档，document对象是HTMLDocument(继承自Document类型)的一个实例。用来表示整个页面。document对象也是window对象的一个属性。因此可以用全局对象来访问。</p>
     </div>
-     <div class="step slide" data-x="-4000" data-y="12500" data-rotate-z="270">
-        
+    <div class="step slide" data-x="-4000" data-y="12500" data-rotate-z="270">
+        <q>DOM方法</q>
+        <p>文档中每一个节点都有一个childNode属性。其中保存着一个Nodelist对象。</p>
+        <p>Nodelist是一个类数组对象。用于保存一组有序的节点。Nodelist对象是基于DOM动态结构执行查询的结果。DOM结构的变化会自动反应在NodeList对象中。</p>
+<pre><code>
+var body = document.body;
+var firstChild = body.childNodes[0];
+var count = body.childNodes.length;
+</code></pre>
     </div>
+    <div class="step slide" data-x="-4000" data-y="11500" data-rotate-z="270">
+        <q>如何将类数组转化为数组</q>
+    <p>Array对象里有一个slice将类数组转化为数组</p>
+<pre><code>
+var ObjectArr = document.body.childNodes;
+console.log(Object.prototype.toString.call(ObjectArr));
+var RealArr = Array.prototype.slice.call(ObjectArr);
+console.log(Object.prototype.toString.call(RealArr));
+</code></pre>
 
 
+<p>注意：这种方法只适用于IE9+的浏览器。IE8及以前浏览器的类数组转数组方法下节课继续讨论</p>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="10500" data-rotate-z="270">
+        <q>ParentNode,nextSibling,previousSibling</q>
+        <p>每一个节点都有一个parentNode属性。该属性指向文档树的父节点。包含在childNodes列表中的所有节点都具有相同的父节点。</p>
+        <p>同时节点也有nextSibling和previousSibling属性。用于访问同一列表中的其他节点。</p>
+<pre><code>
+var body = document.body;
+var firstChild = body.firstChild;
+var secondChild = firstChild.nextSibling;
+console.log(secondChild.previousSibling === firstChild);
+</code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="9500" data-rotate-z="270">
+        <q>操作节点</q>
+        <p>DOM还提供了一些操作节点的方法。最常用的为appendChild,removeChild,insertBefore</p>
+<pre><code>
+var body = document.body;
+var someNode = document.createElement('p');
+var anotherNode = document.createElement('div');
+someNode.innerHTML = "Helloworld";
+anotherNode.innerHTML = "Mac OS X";
+
+someNode.setAttribute('id','abc');
+body.appendChild(someNode);
+body.appendChild(anotherNode);
+
+body.removeChild(document.getElementById('abc'));
+</code></pre>
+    </div>
+    <div class="step slide" data-x="-4000" data-y="8500" data-rotate-z="270">
+        <q>节点复制</q>
+        <p>DOM还提供了一个方法cloneNode用于节点的复制。同时它还提供了一个布尔值参数。用户判断深复制还是浅复制.默认为浅复制</p>
+<pre><code>
+var body = document.body;
+var shallow_clone = body.cloneNode();
+var deep_clone = body.cloneNode(true);
+</code></pre>
+    </div>
             <!-- <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10"> -->
-        <!-- <div class="step slide" data-x="5000" data-y="8500" data-rotate-z="90">
+        <div class="step slide" data-x="5000" data-y="8500" data-rotate-z="90">
         <q>结束语</q>
-        <q>有关原型进阶的知识，我们下期再会！</q>
+        <q>有关DOM进阶以及兼容性的知识，我们下期再会！</q>
         </div>
- -->
 
-       <!--  <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+        <!-- 第一次作业 -->
+<!-- ========================================================================================== -->
+
+       <!--    <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
         <q>HomeWork：</q>
         <q>1. 写一个4 X 4 的表格。要求点击任何一个单元格，当前单元格的背景颜色要改变</q>
         <q>2.构造出你想要的任何对象出来</q>
         </div>
         -->
+
+<!-- ========================================================================================== -->
+        <!-- 第二次作业 -->
+        <!-- 其实想出这题的。。可惜太难。 = =。 如果你有能力的话，做好后发我邮箱(dongtiangche@gmail-->
+      <!--   <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+        <q>HomeWork：</q>
+        <p>写一个Div控制器的构造函数</p>
+        <p>要求：该构造函数所实例化的对象第一个参数为所控制的div。实例化出的控制器能够对div进行添加，删除等节点操作。控制器所依附的div要有扩展对象方法(extend)。</p>
+        <p>如:</p>
+        <pre><code>
+<div id="control"></div>
+function divHandle(){};
+
+var divControl = new divHandle('control'); //实例化一个控制器对象。
+divControl.append(document.createElement('div')); //向divControl中添加一个div框
+divControl.remove(document.getElementById('target'));//从divControl中移除一个节点
+        </code></pre>    
+        </div> -->
+
+        <div class="step slide" data-x="10000" data-y="18500" data-rotate-y="90" data-scale="10" data-rotate-x="90"> 
+            <q>HomeWork</q>
+            <p>构造一个矩形对象和一个正方形对象。正方体对象继承于矩形对象。每个对象上都有自己的方法用来获取这个正方体或矩形的面积。</p>
+        </div> 
+
+<!-- ========================================================================================== -->
+
+       
     </div>
 </body>
 <script type="text/javascript" src="impress.js"></script>
